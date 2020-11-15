@@ -144,7 +144,7 @@ def find_rule_matches(ingredient):
     return found, match_category 
 
 
-def get_carbon_categories(ingredient_input, carbon_categories, category_syns_dict, nlp):
+def get_carbon_categories(ingredient_input, carbon_categories, category_syns_dict):
 
     ingredient_output = {'carbon_categories':{}}
 
@@ -162,6 +162,7 @@ def get_carbon_categories(ingredient_input, carbon_categories, category_syns_dic
             found, category_match = find_fuzzy_match(ingredient, carbon_categories)
         # then test for semantic matches
         if not found:
+            nlp = spacy.load("en_core_web_lg")
             found, category_match = find_semantic_match(ingredient, carbon_categories, category_syns_dict, nlp)
         # then run the update carbon db method. this should be toggled on and off   
         if not found:
