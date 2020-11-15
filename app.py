@@ -1,6 +1,6 @@
 from flask import Flask, request
 from flask_cors import CORS
-from carbon_classifier import get_carbon_categories, load_carbon_categories, get_category_syns_dict
+from carbon_classifier import get_carbon_cat, get_carbon_categories, load_carbon_categories, get_category_syns_dict
 import spacy
 
 app = Flask(__name__)
@@ -14,15 +14,19 @@ category_syns_dict = get_category_syns_dict(carbon_categories)
 
 
 @app.route('/match', methods=['POST'])
-def match_mutiple():
+def match():
     try:
         req_data = request.get_json()
+        print(req_data)
+        ingredient = req_data.get('ingredient', '')
 
-        matched_ingredients = get_carbon_categories(req_data, carbon_categories, category_syns_dict, nlp)
-        
-        return str(matched_ingredients)
+        if ingredient != '':
+            return get_carbon_cat(ingredient, carbon_categories, category_syns_dict)
+        else:
+            return "Record not found", 400 
+
     except Exception as e:
-        return f"unable to calculate food item index, error {str(e)}"
+        return f"unable to match ingredient, error {str(e)}"
 
 
 @app.route('/matchmutiple', methods=['POST'])
@@ -30,11 +34,11 @@ def match_mutiple():
     try:
         req_data = request.get_json()
 
-        matched_ingredients = get_carbon_categories(req_data, carbon_categories, category_syns_dict, nlp)
+        matched_ingredients = get_carbon_categories(req_data, carbon_categories, category_syns_dict)
         
         return str(matched_ingredients)
     except Exception as e:
-        return f"unable to calculate food item index, error {str(e)}"
+        return f"unable to match ingredients list, error {str(e)}"
 
 
 if __name__ == "__main__":
