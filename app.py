@@ -4,8 +4,7 @@ from carbon_classifier import get_carbon_cat, get_carbon_categories, load_carbon
 import spacy
 
 app = Flask(__name__)
-cors = CORS(app, resources={r"*": {"origins": "https://landing-page-xu26by35cq-ew.a.run.app"}})
-# cors = CORS(app, resources={r"*": {"origins": "https://pr230-ui-xu26by35cq-ew.a.run.app"}})
+cors = CORS(app, resources={r"*": {"origins": "https://pr230-ui-xu26by35cq-ew.a.run.app"}})
 # cors = CORS(app, resources={r"*": {"origins": "http://localhost:8080"}})
 
 path = 'data/model_training_data/'
