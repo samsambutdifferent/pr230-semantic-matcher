@@ -14,10 +14,16 @@ category_syns_dict = get_category_syns_dict(carbon_categories)
 
 @app.route('/match', methods=['POST'])
 def match():
+    """matches a single ingredient with a category
+        params:
+            type: string
+            fomat: "ingredient name"
+        return:
+            type: dict
+            format: {"orignal:" "ingredient name", "matched": "category name"}
+    """
     try:
-        req_data = request.get_json()
-        print(req_data)
-        ingredient = req_data.get('ingredient', '')
+        ingredient = request.get_json()
 
         if ingredient != '':
             return get_carbon_cat(ingredient, carbon_categories, category_syns_dict)
@@ -30,11 +36,19 @@ def match():
 
 @app.route('/matchmutiple', methods=['POST'])
 def match_mutiple():
+    """matches mutiple ingredients with appropriate category
+        params:
+            type: list[string..]
+            fomat: ["ingredient name", ..]
+        return:
+            type: list[dict..]
+            format: [{"orignal:" "ingredient name", "matched": "category name"}]
+    """
     try:
-        req_data = request.get_json()
+        ingredients = request.get_json()
 
-        matched_ingredients = get_carbon_categories(req_data, carbon_categories, category_syns_dict)
-        
+        matched_ingredients = get_carbon_categories(ingredients, carbon_categories, category_syns_dict)
+
         return str(matched_ingredients)
     except Exception as e:
         return f"unable to match ingredients list, error {str(e)}"
