@@ -6,6 +6,12 @@ from fuzzywuzzy import fuzz
 
 nlp = spacy.load("en_core_web_lg")
 
+class MatchedCategory:
+  def __init__(self, orignal, matched):
+    self.orignal = orignal
+    self.matched = matched
+
+
 def load_carbon_categories(path):
 
     carbon_category_files = os.listdir(path)
@@ -168,19 +174,15 @@ def get_carbon_cat(ingredient, carbon_categories, category_syns_dict):
         print(f'{ingredient} not found - should log this')
         category_match = 'misc'
 
-    return category_match
+    return vars(MatchedCategory(ingredient, category_match))
 
 
-def get_carbon_categories(ingredient_input, carbon_categories, category_syns_dict):
+def get_carbon_categories(ingredients, carbon_categories, category_syns_dict):
+    ingredient_output = []
 
-    ingredient_output = {'carbon_categories':{}}
+    for ingredient in ingredients:
+        ingredient_output.append(
+            get_carbon_cat(ingredient, carbon_categories, category_syns_dict)
+        )
 
-    for ingredient in ingredient_input['ingredients']:
-        print(f'categorising: {ingredient}')
-        found = False
-
-        category_match = get_carbon_cat(ingredient, carbon_categories, category_syns_dict)
-
-        ingredient_output['carbon_categories'][category_match] = ingredient_input['ingredients'][ingredient]
-    
     return ingredient_output
