@@ -16,8 +16,17 @@ this will take ages...
 
 ### run
 
-python app.py
+```bash
+    python app.py
+```
 
+OR 
+
+```bash
+    export FLASK_APP=app.py
+    export FLASK_ENV=development
+    flask run
+```
 
 ## deployment
 
