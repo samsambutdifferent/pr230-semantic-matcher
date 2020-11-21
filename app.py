@@ -5,7 +5,7 @@ import spacy
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"*": {"origins": "https://pr230-ui-xu26by35cq-ew.a.run.app"}})
-# cors = CORS(app, resources={r"*": {"origins": "http://localhost:8080"}})
+# cors = CORS(app, resources={r"*": {"origins": "http://localhost:8081"}})
 
 path = 'data/model_training_data/'
 carbon_categories = load_carbon_categories(path)
@@ -34,7 +34,7 @@ def match():
         return f"unable to match ingredient, error {str(e)}"
 
 
-@app.route('/', methods=['POST'])
+@app.route('/matchmultiple', methods=['POST'])
 def match_mutiple():
     """matches mutiple ingredients with appropriate category
         params:
