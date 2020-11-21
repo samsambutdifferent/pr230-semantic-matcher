@@ -46,12 +46,7 @@ def match_mutiple():
     """
     try:
         ingredients = request.get_json()
-
-        matched_ingredients = jsonify(items=get_carbon_categories(ingredients, carbon_categories, category_syns_dict))
-        
-        print(matched_ingredients)
-
-        return matched_ingredients
+        return jsonify(items=get_carbon_categories(ingredients, carbon_categories, category_syns_dict))
     except Exception as e:
         return f"unable to match ingredients list, error {str(e)}"
 
