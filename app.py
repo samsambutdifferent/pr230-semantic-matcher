@@ -34,7 +34,7 @@ def match():
         return f"unable to match ingredient, error {str(e)}"
 
 
-@app.route('/matchmutiple', methods=['POST'])
+@app.route('/', methods=['POST'])
 def match_mutiple():
     """matches mutiple ingredients with appropriate category
         params:
