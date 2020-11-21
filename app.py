@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from carbon_classifier import get_carbon_cat, get_carbon_categories, load_carbon_categories, get_category_syns_dict
 import spacy
@@ -41,15 +41,17 @@ def match_mutiple():
             type: list[string..]
             fomat: ["ingredient name", ..]
         return:
-            type: list[dict..]
-            format: [{"orignal:" "ingredient name", "matched": "category name"}]
+            type: object{list[dict..]}
+            format: {"items": [{"orignal:" "ingredient name", "matched": "category name"}]}
     """
     try:
         ingredients = request.get_json()
 
-        matched_ingredients = get_carbon_categories(ingredients, carbon_categories, category_syns_dict)
+        matched_ingredients = jsonify(items=get_carbon_categories(ingredients, carbon_categories, category_syns_dict))
+        
+        print(matched_ingredients)
 
-        return str(matched_ingredients)
+        return matched_ingredients
     except Exception as e:
         return f"unable to match ingredients list, error {str(e)}"
 
