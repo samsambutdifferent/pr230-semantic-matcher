@@ -4,3 +4,4 @@ flask-cors
 numpy
 spacy
 fuzzywuzzy
+python-dotenv

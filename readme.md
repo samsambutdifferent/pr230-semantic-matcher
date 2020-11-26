@@ -10,6 +10,7 @@ python3 -m pip install -r requirements.txt
 py -m venv env
 Set-ExecutionPolicy Unrestricted -Scope Process
 .\env\Scripts\activate
+py -m pip install -r requirements.txt
 
 ### Spacy model
 

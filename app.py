@@ -2,10 +2,13 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from carbon_classifier import get_carbon_cat, get_carbon_categories, load_carbon_categories, get_category_syns_dict
 import spacy
+import os
+from dotenv import load_dotenv
+load_dotenv()
+UI_URL = os.getenv("UI_URL")
 
 app = Flask(__name__)
-cors = CORS(app, resources={r"*": {"origins": "https://pr230-ui-xu26by35cq-ew.a.run.app"}})
-#cors = CORS(app, resources={r"*": {"origins": "http://localhost:8080"}})
+cors = CORS(app, resources={r"*": {"origins": UI_URL}})
 
 path = 'data/model_training_data/'
 carbon_categories = load_carbon_categories(path)
