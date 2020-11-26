@@ -5,7 +5,7 @@ import spacy
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"*": {"origins": "https://pr230-ui-xu26by35cq-ew.a.run.app"}})
-# cors = CORS(app, resources={r"*": {"origins": "http://localhost:8081"}})
+#cors = CORS(app, resources={r"*": {"origins": "http://localhost:8080"}})
 
 path = 'data/model_training_data/'
 carbon_categories = load_carbon_categories(path)
@@ -52,4 +52,4 @@ def match_mutiple():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8080)                
+    app.run(host='0.0.0.0', port=8080)
