@@ -5,3 +5,5 @@ numpy
 spacy
 fuzzywuzzy
 python-dotenv
+google-cloud-firestore
+firebase-admin

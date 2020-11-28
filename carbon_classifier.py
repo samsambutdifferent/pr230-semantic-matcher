@@ -3,6 +3,7 @@ import numpy as np
 import os
 import spacy
 from fuzzywuzzy import fuzz
+from firestore_helper import load_carbon_matches
 
 nlp = spacy.load("en_core_web_lg")
 
@@ -10,21 +11,6 @@ class MatchedCategory:
   def __init__(self, orignal, matched):
     self.orignal = orignal
     self.matched = matched
-
-
-def load_carbon_categories(path):
-
-    carbon_category_files = os.listdir(path)
-
-    carbon_categories = {}
-    for carbon_category_file in carbon_category_files:
-        if '.ipynb' not in carbon_category_file:
-            carbon_category_syns = pd.read_csv(path+carbon_category_file)
-            carbon_category_syns = carbon_category_syns.T[0].values
-            carbon_categories[carbon_category_file.split('_types.csv')[0]] = carbon_category_syns
-            
-    return carbon_categories
-
 
 def find_exact_match(ingredient, carbon_categories):
     found = False
