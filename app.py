@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from carbon_classifier import get_carbon_cat, get_carbon_categories, load_carbon_categories, get_category_syns_dict
+from carbon_classifier import get_carbon_cat, get_carbon_categories, get_category_syns_dict
+from firestore_helper import load_carbon_matches
 import spacy
 import os
 from dotenv import load_dotenv
@@ -10,10 +11,8 @@ UI_URL = os.getenv("UI_URL")
 app = Flask(__name__)
 cors = CORS(app, resources={r"*": {"origins": UI_URL}})
 
-path = 'data/model_training_data/'
-carbon_categories = load_carbon_categories(path)
+carbon_categories = load_carbon_matches()
 category_syns_dict = get_category_syns_dict(carbon_categories)
-
 
 @app.route('/match', methods=['POST'])
 def match():
