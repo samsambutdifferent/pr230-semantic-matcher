@@ -22,7 +22,7 @@ def match():
             fomat: "ingredient name"
         return:
             type: dict
-            format: {"orignal:" "ingredient name", "matched": "category name"}
+            format: {"original:" "ingredient name", "matched": "category name"}
     """
     try:
         ingredient = request.get_json()
@@ -44,7 +44,7 @@ def match_mutiple():
             fomat: ["ingredient name", ..]
         return:
             type: object{list[dict..]}
-            format: {"items": [{"orignal:" "ingredient name", "matched": "category name"}]}
+            format: {"items": [{"original:" "ingredient name", "matched": "category name"}]}
     """
     try:
         ingredients = request.get_json()

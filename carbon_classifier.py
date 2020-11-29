@@ -8,8 +8,8 @@ from firestore_helper import load_carbon_matches
 nlp = spacy.load("en_core_web_lg")
 
 class MatchedCategory:
-  def __init__(self, orignal, matched):
-    self.orignal = orignal
+  def __init__(self, original, matched):
+    self.original = original
     self.matched = matched
 
 def find_exact_match(ingredient, carbon_categories):
