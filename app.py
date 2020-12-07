@@ -5,6 +5,7 @@ from firestore_helper import load_carbon_matches
 import spacy
 import os
 from dotenv import load_dotenv
+import sys
 load_dotenv()
 UI_URL = os.getenv("UI_URL")
 
@@ -28,11 +29,14 @@ def match():
         ingredient = request.get_json()
 
         if ingredient != '':
+            sys.stdout.flush()
             return get_carbon_cat(ingredient, carbon_categories, category_syns_dict)
         else:
+            sys.stdout.flush()
             return "Record not found", 400 
 
     except Exception as e:
+        sys.stdout.flush()
         return f"unable to match ingredient, error {str(e)}"
 
 
@@ -48,8 +52,10 @@ def match_mutiple():
     """
     try:
         ingredients = request.get_json()
+        sys.stdout.flush()
         return jsonify(items=get_carbon_categories(ingredients, carbon_categories, category_syns_dict))
     except Exception as e:
+        sys.stdout.flush()
         return f"unable to match ingredients list, error {str(e)}"
 
 
