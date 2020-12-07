@@ -4,24 +4,24 @@ import os
 import spacy
 from fuzzywuzzy import fuzz
 from firestore_helper import load_carbon_matches
+from helper import log_match
 
 nlp = spacy.load("en_core_web_lg")
 
 class MatchedCategory:
-  def __init__(self, original, matched):
+  def __init__(self, original, matched, log_id):
     self.original = original
     self.matched = matched
+    self.log_id = log_id
 
 def find_exact_match(ingredient, carbon_categories):
     found = False
-    match_category = False
+    match_category = ''
 
     for carbon_category in carbon_categories: 
         if ingredient in carbon_categories[carbon_category]:
             found = True
             match_category = carbon_category
-            print(f'exact match: {match_category}')
-
     
     return found, match_category
 
@@ -56,7 +56,6 @@ def find_semantic_match(ingredient, carbon_categories, category_syns_dict):
         for i, carbon_category in enumerate(carbon_categories):
             semantic_similarities = []
             for category_syn in carbon_categories[carbon_category]:
-                #print(category_syn)
                 category_syn_token = category_syns_dict[carbon_category][category_syn]
                 if (category_syn_token.has_vector) & (category_syn_token.vector.sum()!=0):
                     semantic_similarity = token.similarity(category_syn_token) * 100
@@ -74,12 +73,9 @@ def find_semantic_match(ingredient, carbon_categories, category_syns_dict):
         max_similarity_id = similarity_df['match_rate'].idxmax()
         max_similarity_df = similarity_df.loc[max_similarity_id]
 
-        #print(list(max_similarity_df.values))
-
         if max_similarity_rate > threshold:
             found = True
             match_category = max_similarity_df['category']
-            print(f'semantic match: {match_category}')
    
     return found, match_category
 
@@ -114,13 +110,9 @@ def find_fuzzy_match(ingredient, carbon_categories):
     max_similarity_id = similarity_df['match_rate'].idxmax()
     max_similarity_df = similarity_df.loc[max_similarity_id]
     
-    #print(list(max_similarity_df.values))
-    
     if max_similarity_rate > threshold:
         found = True
         match_category = max_similarity_df['category']
-        print(f'fuzzy match: {match_category}')
-
     
     return found, match_category
 
@@ -133,34 +125,44 @@ def find_rule_matches(ingredient):
     
     if match_category != False:
         found = True
-        print(f'rule match: {match_category}')
         
     return found, match_category 
 
 
 def get_carbon_cat(ingredient, carbon_categories, category_syns_dict):
-
     print(f'categorising: {ingredient}')
     found = False
-    category_match = 'hello'
+    category_match = ''
 
-    # first test for exact matches
+    # test for exact matches
     found, category_match = find_exact_match(ingredient, carbon_categories)
-    # then test for rule matches
-    if not found:
-        found, category_match = find_rule_matches(ingredient)        
+    if found:
+        log_id = log_match(ingredient, category_match, "exact")
+        return vars(MatchedCategory(ingredient, category_match, log_id))
+    
+    # test for rule matches
+    found, category_match = find_rule_matches(ingredient) 
+    if found:
+        log_id = log_match(ingredient, category_match, "rule")
+        return vars(MatchedCategory(ingredient, category_match, log_id))
+    
     # then test for fuzzy matches
-    if not found:
-        found, category_match = find_fuzzy_match(ingredient, carbon_categories)
-    # then test for semantic matches
-    if not found:
-        found, category_match = find_semantic_match(ingredient, carbon_categories, category_syns_dict)
-    # then run the update carbon db method. this should be toggled on and off   
-    if not found:
-        print(f'{ingredient} not found - should log this')
-        category_match = 'misc'
+    found, category_match = find_fuzzy_match(ingredient, carbon_categories)
+    if found:
+        log_id = log_match(ingredient, category_match, "fuzzy")
+        return vars(MatchedCategory(ingredient, category_match, log_id))
+    
+    # # test for semantic matches
+    found, category_match = find_semantic_match(ingredient, carbon_categories, category_syns_dict)
+    if found:
+        log_id = log_match(ingredient, category_match, "semantic")
+        return vars(MatchedCategory(ingredient, category_match, log_id))
 
-    return vars(MatchedCategory(ingredient, category_match))
+    # # still not found set to misc
+    log_id = log_match(ingredient, category_match, "Not Found")
+    category_match = 'misc'
+
+    return vars(MatchedCategory(ingredient, category_match, log_id))
 
 
 def get_carbon_categories(ingredients, carbon_categories, category_syns_dict):
