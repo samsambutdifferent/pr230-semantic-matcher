@@ -15,6 +15,20 @@ cors = CORS(app, resources={r"*": {"origins": UI_URL}})
 carbon_categories = load_carbon_matches()
 category_syns_dict = get_category_syns_dict(carbon_categories)
 
+@app.route('/wakeup', methods=['GET'])
+def wake_up():
+    """starts the api
+        params:
+        return:
+            type: string
+    """
+    try:
+        return "started api", 200 
+    except Exception as e:
+        sys.stdout.flush()
+        return f"unable to start api {str(e)}", 400
+
+
 @app.route('/match', methods=['POST'])
 def match():
     """matches a single ingredient with a category
