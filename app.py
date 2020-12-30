@@ -7,10 +7,11 @@ import os
 from dotenv import load_dotenv
 import sys
 load_dotenv()
-UI_URL = os.getenv("UI_URL")
+UI_URL_ONE = os.getenv("UI_URL_ONE")
+UI_URL_TWO = os.getenv("UI_URL_TWO")
 
 app = Flask(__name__)
-cors = CORS(app, resources={r"*": {"origins": UI_URL}})
+cors = CORS(app, resources={r"*": {"origins": [UI_URL_ONE, UI_URL_TWO]}})
 
 carbon_categories = load_carbon_matches()
 category_syns_dict = get_category_syns_dict(carbon_categories)
@@ -33,14 +34,15 @@ def wake_up():
 def match():
     """matches a single ingredient with a category
         params:
-            type: string
-            fomat: "ingredient name"
+            type: dict
+            fomat: {name: "ingredient name"}
         return:
             type: dict
             format: {"original:" "ingredient name", "matched": "category name"}
     """
     try:
-        ingredient = request.get_json()
+        js = request.get_json()
+        ingredient = js.get('name', '')
 
         if ingredient != '':
             sys.stdout.flush()
