@@ -7,12 +7,8 @@ import os
 from dotenv import load_dotenv
 import sys
 load_dotenv()
-
 UI_URL_ONE = os.getenv("UI_URL_ONE")
 UI_URL_TWO = os.getenv("UI_URL_TWO")
-
-print(f'UI_URL_ONE: {UI_URL_ONE}')
-print(f'UI_URL_TWO: {UI_URL_TWO}')
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"*": {"origins": [UI_URL_ONE, UI_URL_TWO]}})
@@ -45,12 +41,8 @@ def match():
             format: {"original:" "ingredient name", "matched": "category name"}
     """
     try:
-        print("here!!")
-
         js = request.get_json()
         ingredient = js.get('name', '')
-
-        print(f'ingredient: {ingredient}')
 
         if ingredient != '':
             sys.stdout.flush()
