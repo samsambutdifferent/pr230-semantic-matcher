@@ -41,8 +41,12 @@ def match():
             format: {"original:" "ingredient name", "matched": "category name"}
     """
     try:
+        print("here!!")
+
         js = request.get_json()
         ingredient = js.get('name', '')
+
+        print(f'ingredient: {ingredient}')
 
         if ingredient != '':
             sys.stdout.flush()
