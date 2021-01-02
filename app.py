@@ -7,11 +7,10 @@ import os
 from dotenv import load_dotenv
 import sys
 load_dotenv()
-UI_URL_ONE = os.getenv("UI_URL_ONE")
-UI_URL_TWO = os.getenv("UI_URL_TWO")
+uris = os.getenv("URIS").split(',')
 
 app = Flask(__name__)
-cors = CORS(app, resources={r"*": {"origins": [UI_URL_ONE, UI_URL_TWO]}})
+cors = CORS(app, resources={r"*": {"origins": uris}})
 
 carbon_categories = load_carbon_matches()
 category_syns_dict = get_category_syns_dict(carbon_categories)
