@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from carbon_classifier import get_carbon_cat, get_carbon_categories, get_category_syns_dict
+from carbon_classifier import get_carbon_cat, get_carbon_categories
 from firestore_helper import load_carbon_matches
 import spacy
 import os
@@ -13,7 +13,6 @@ app = Flask(__name__)
 cors = CORS(app, resources={r"*": {"origins": uris}})
 
 carbon_categories = load_carbon_matches()
-category_syns_dict = get_category_syns_dict(carbon_categories)
 
 @app.route('/wakeup', methods=['GET'])
 def wake_up():
@@ -45,7 +44,7 @@ def match():
 
         if ingredient != '':
             sys.stdout.flush()
-            return get_carbon_cat(ingredient, carbon_categories, category_syns_dict)
+            return get_carbon_cat(ingredient, carbon_categories)
         else:
             sys.stdout.flush()
             return "Record not found", 400 
@@ -68,7 +67,7 @@ def match_mutiple():
     try:
         ingredients = request.get_json()
         sys.stdout.flush()
-        return jsonify(items=get_carbon_categories(ingredients, carbon_categories, category_syns_dict))
+        return jsonify(items=get_carbon_categories(ingredients, carbon_categories))
     except Exception as e:
         sys.stdout.flush()
         return f"unable to match ingredients list, error {str(e)}"

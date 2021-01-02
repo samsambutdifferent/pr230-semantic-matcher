@@ -12,13 +12,8 @@ Set-ExecutionPolicy Unrestricted -Scope Process
 .\env\Scripts\activate
 py -m pip install -r requirements.txt
 ```
-### Spacy model
-this will take ages... 
-```bash
-    python -m spacy download en_core_web_lg
-```
-### run
 
+### run
 ```bash
     export FLASK_APP=app.py
     export FLASK_ENV=development
