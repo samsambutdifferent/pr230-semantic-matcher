@@ -8,8 +8,6 @@ from helper import log_match
 import requests
 import json
 
-nlp = spacy.load("en_core_web_lg")
-
 class MatchedCategory:
   def __init__(self, original, matched, log_id):
     self.original = original
