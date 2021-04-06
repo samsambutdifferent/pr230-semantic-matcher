@@ -3,10 +3,10 @@ import numpy as np
 import os
 import spacy
 from fuzzywuzzy import fuzz
-from firestore_helper import load_carbon_matches
-from helper import log_match
+from firestore_helper import load_carbon_matches, write_to_reported
 import requests
 import json
+import random
 
 class MatchedCategory:
   def __init__(self, original, matched, log_id):
@@ -76,43 +76,42 @@ def find_rule_matches(ingredient):
 
 
 def get_carbon_cat(ingredient, carbon_categories):
+
+    print("!!!!!!!!!!")
+
     print(f'categorising: {ingredient}')
     found = False
     category_match = ''
 
     # test for exact matches
     found, category_match = find_exact_match(ingredient, carbon_categories)
-    if found:
-        log_id = log_match(ingredient, category_match, "exact")
-        return vars(MatchedCategory(ingredient, category_match, log_id))
     
     # test for rule matches
-    found, category_match = find_rule_matches(ingredient) 
-    if found:
-        log_id = log_match(ingredient, category_match, "rule")
-        return vars(MatchedCategory(ingredient, category_match, log_id))
-    
-    # then test for fuzzy matches   
-    found, category_match = find_fuzzy_match(ingredient, carbon_categories)
-    if found:
-        log_id = log_match(ingredient, category_match, "fuzzy")
-        return vars(MatchedCategory(ingredient, category_match, log_id))
+    if found == False:
+        found, category_match = find_rule_matches(ingredient) 
+
+    # then test for fuzzy matches 
+    if found == False:  
+        found, category_match = find_fuzzy_match(ingredient, carbon_categories)
 
     # # if semantic flag enabled
-    if os.getenv("USE_SEMANTIC_SERVICE") == 'True':
+    if found == False and os.getenv("USE_SEMANTIC_SERVICE") == 'True':
         # # test for semantic matches
         x = requests.post(os.getenv("SEMANTIC_SERVICE_URI"), json={"name": ingredient})
         response = json.loads(x.text)
         if response['found'] :
-            log_id = log_match(ingredient, response["matched"], "semantic")
-            return vars(MatchedCategory(ingredient, response["matched"], log_id))
+            category_match=response["matched"]
+            found=True
     
+    if found == False:
+        category_match = 'misc'
 
-    # # still not found set to misc
-    category_match = 'misc'
-    log_id = log_match(ingredient, category_match, "misc")
+    # report
+    print("hello")
 
-    print(category_match)
+    log_id = random.randint(9999,99999)
+
+    write_to_reported(ingredient, category_match, log_id)
 
     return vars(MatchedCategory(ingredient, category_match, log_id))
 
