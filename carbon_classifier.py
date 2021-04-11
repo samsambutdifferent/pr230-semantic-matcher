@@ -77,8 +77,6 @@ def find_rule_matches(ingredient):
 
 def get_carbon_cat(ingredient, carbon_categories):
 
-    print("!!!!!!!!!!")
-
     print(f'categorising: {ingredient}')
     found = False
     category_match = ''
@@ -107,8 +105,6 @@ def get_carbon_cat(ingredient, carbon_categories):
         category_match = 'misc'
 
     # report
-    print("hello")
-
     log_id = random.randint(9999,99999)
 
     write_to_reported(ingredient, category_match, log_id)
