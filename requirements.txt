@@ -7,3 +7,4 @@ fuzzywuzzy
 python-dotenv
 google-cloud-firestore
 firebase-admin
+click==7.1.2
