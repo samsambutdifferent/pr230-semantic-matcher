@@ -40,7 +40,7 @@ def write_to_reported(log_id, matched, original):
             original
                 type: string
     """
-    date_time = datetime.now().strftime("%m/%d/%Y-%H:%M:%S")
+    date_time = datetime.now().strftime("%m-%d-%Y-%H:%M:%S")
     data = {
         u'log_id': log_id,
         u'matched': matched,
@@ -51,6 +51,6 @@ def write_to_reported(log_id, matched, original):
     print(f"reporting: {data}")
 
     try:
-        db.collection(u'reported').document(date_time).set(data)
+        db.collection(u'reported').document(str(date_time)).set(data)
     except Exception as e:
         print(f"failed reporting: {e}")
