@@ -77,6 +77,8 @@ def find_rule_matches(ingredient):
 
 def get_carbon_cat(ingredient, carbon_categories):
 
+    ingredient = ingredient.lower()
+    
     print(f'categorising: {ingredient}')
     found = False
     category_match = ''
