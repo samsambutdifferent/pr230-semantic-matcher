@@ -107,7 +107,7 @@ def get_carbon_cat(ingredient, carbon_categories):
     # report
     log_id = random.randint(9999,99999)
 
-    write_to_reported(ingredient, category_match, log_id)
+    write_to_reported(log_id, category_match, ingredient)
 
     return vars(MatchedCategory(ingredient, category_match, log_id))
 
