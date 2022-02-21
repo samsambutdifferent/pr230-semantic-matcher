@@ -15,7 +15,7 @@ uris = os.getenv("URIS").split(",")
 app = Flask(__name__)
 cors = CORS(app, resources={r"*": {"origins": uris}})
 
-carbon_categories = load_carbon_matches()
+all_alternatives, carbon_categories = load_carbon_matches()
 
 
 @app.route("/wakeup", methods=["GET"])
@@ -48,7 +48,7 @@ def match():
 
         if ingredient != "":
             sys.stdout.flush()
-            return get_carbon_cat(ingredient, carbon_categories)
+            return get_carbon_cat(ingredient, carbon_categories, all_alternatives)
         else:
             sys.stdout.flush()
             return "Record not found", 400
@@ -71,11 +71,44 @@ def match_mutiple():
     try:
         ingredients = request.get_json()
         sys.stdout.flush()
-        return jsonify(items=get_carbon_categories(ingredients, carbon_categories))
+        return jsonify(items=get_carbon_categories(ingredients, carbon_categories, all_alternatives))
     except Exception as e:
         sys.stdout.flush()
         return f"unable to match ingredients list, error {str(e)}"
 
+@app.route("/fetchAlternatives", methods=["POST"])
+def fetch_alternatives():
+    """fetched alternative for matched categories
+    params:
+        type: list(str)
+        fomat: ["beef","chicken"]
+    return:
+        type: dict{}
+        format: {"name": [],..}
+    """
+
+    try:
+        re = request.get_json()
+        print(re)
+
+        alternatives = {}
+
+        for ingredient in re:
+            
+            if all_alternatives.get(ingredient, None) != None:
+                alternatives[ingredient] = all_alternatives[ingredient]
+            else:
+                alternatives[ingredient] = []
+
+        sys.stdout.flush()
+
+        return alternatives
+
+
+
+    except Exception as e:
+        sys.stdout.flush()
+        return f"unable to find alternatves, error {str(e)}"
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)

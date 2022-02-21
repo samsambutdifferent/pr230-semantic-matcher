@@ -10,6 +10,7 @@ db = firestore.client()
 firebase_collection = "categories"
 
 
+
 def load_carbon_matches():
     """loads matches from firestore db
     return:
@@ -17,6 +18,7 @@ def load_carbon_matches():
         format: {'name': ['synonnym one', 'synonym two',...], ..}
     """
     carbon_matches = {}
+    alternatives = {}
     collection = db.collection(firebase_collection).get()
 
     # for all documents in collection carbon_matches
@@ -25,7 +27,11 @@ def load_carbon_matches():
 
         carbon_matches[doc_dict["name"]] = doc_dict["matches"]
 
-    return carbon_matches
+        alt = doc_dict.get("alternatives", [])
+
+        alternatives[doc_dict["name"]] = alt
+
+    return alternatives,carbon_matches
 
 
 def write_to_reported(log_id, matched, original):

@@ -8,13 +8,14 @@ import requests
 import spacy
 from fuzzywuzzy import fuzz
 
-from firestore_helper import load_carbon_matches, write_to_reported
+from firestore_helper import write_to_reported
 
 
 class MatchedCategory:
-    def __init__(self, original, matched, log_id):
+    def __init__(self, original, matched, alternatives, log_id):
         self.original = original
         self.matched = matched
+        self.alternatives = alternatives
         self.log_id = log_id
 
 
@@ -80,7 +81,8 @@ def find_rule_matches(ingredient):
     return found, match_category
 
 
-def get_carbon_cat(ingredient, carbon_categories):
+
+def get_carbon_cat(ingredient, carbon_categories, all_alternatives):
 
     ingredient = ingredient.lower()
 
@@ -108,21 +110,25 @@ def get_carbon_cat(ingredient, carbon_categories):
             category_match = response["matched"]
             found = True
 
+    alternatives = []
+
     if found == False:
         category_match = "misc"
+    else:
+        alternatives = all_alternatives[category_match]
 
     # report
     log_id = random.randint(9999, 99999)
 
     write_to_reported(log_id, category_match, ingredient)
 
-    return vars(MatchedCategory(ingredient, category_match, log_id))
+    return vars(MatchedCategory(ingredient, category_match, alternatives, log_id))
 
 
-def get_carbon_categories(ingredients, carbon_categories):
+def get_carbon_categories(ingredients, carbon_categories, all_alternatives):
     ingredient_output = []
 
     for ingredient in ingredients:
-        ingredient_output.append(get_carbon_cat(ingredient, carbon_categories))
+        ingredient_output.append(get_carbon_cat(ingredient, carbon_categories, all_alternatives))
 
     return ingredient_output
